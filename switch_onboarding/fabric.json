@@ -1,0 +1,35 @@
+{
+  "$comment": "Fictional site fabric: what a new access switch must plug into. Source of truth for validation and rendering.",
+  "site": "SITE1",
+  "domain": "corp.example",
+  "target_software": { "C9300": "17.12.4", "C9200L": "17.12.4" },
+  "models": {
+    "C9300-48P": { "access_ports": 48, "uplink_prefix": "TenGigabitEthernet{member}/1/", "uplinks": 8, "family": "C9300" },
+    "C9300-24P": { "access_ports": 24, "uplink_prefix": "TenGigabitEthernet{member}/1/", "uplinks": 8, "family": "C9300" },
+    "C9200L-48P-4X": { "access_ports": 48, "uplink_prefix": "TenGigabitEthernet{member}/1/", "uplinks": 4, "family": "C9200L" }
+  },
+  "management": { "vlan": 99, "subnet": "10.20.99.0/24", "gateway": "10.20.99.1", "reserved": ["10.20.99.1", "10.20.99.2", "10.20.99.3"],
+                  "in_use": ["10.20.99.11", "10.20.99.12", "10.20.99.13", "10.20.99.14", "10.20.99.15"] },
+  "vlans": {
+    "10": "USERS", "20": "VOICE", "30": "PRINTERS", "40": "IOT-CAMERAS", "50": "WIRELESS-AP", "99": "MGMT", "999": "PARKING"
+  },
+  "port_profiles": {
+    "user":    { "access_vlan": 10, "voice_vlan": 20, "dot1x": true,  "portfast": true },
+    "printer": { "access_vlan": 30, "voice_vlan": null, "dot1x": false, "portfast": true },
+    "camera":  { "access_vlan": 40, "voice_vlan": null, "dot1x": false, "portfast": true },
+    "ap":      { "trunk": true, "native_vlan": 50, "allowed": [50, 99], "portfast": true },
+    "unused":  { "access_vlan": 999, "shutdown": true }
+  },
+  "distribution": {
+    "SITE1-DS1": { "ip": "10.20.99.2", "free_ports": ["TenGigabitEthernet1/1/9", "TenGigabitEthernet1/1/10", "TenGigabitEthernet1/1/11", "TenGigabitEthernet1/1/12"],
+                   "used_port_channels": [11, 12, 13, 14, 15] },
+    "SITE1-DS2": { "ip": "10.20.99.3", "free_ports": ["TenGigabitEthernet1/1/9", "TenGigabitEthernet1/1/10", "TenGigabitEthernet1/1/11", "TenGigabitEthernet1/1/12"],
+                   "used_port_channels": [11, 12, 13, 14, 15] },
+    "mlag": "StackWise Virtual pair: one port-channel spans DS1 and DS2"
+  },
+  "services": {
+    "aaa_group": "ISE", "radius": ["10.10.5.21", "10.10.5.22"], "tacacs": ["10.10.5.31", "10.10.5.32"],
+    "ntp": ["10.10.5.11", "10.10.5.12"], "syslog": "10.10.5.40", "snmp_user": "netmon", "snmp_group": "NETMON-RO",
+    "dhcp_snooping_vlans": [10, 20, 30, 40, 50]
+  }
+}

@@ -1,0 +1,25 @@
+SITE1-AS-3F-01#show version | include IOS XE Software
+Cisco IOS XE Software, Version 17.9.5
+
+SITE1-AS-3F-01#show etherchannel summary
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------------
+16     Po16(SU)        LACP      Te1/1/1(P)      Te2/1/1(I)
+
+SITE1-AS-3F-01#show interfaces trunk
+Port        Mode             Encapsulation  Status        Native vlan
+Po16        on               802.1q         trunking      1
+
+Port        Vlans allowed on trunk
+Po16        1-4094
+
+Port        Vlans allowed and active in management domain
+Po16        1,10,20,30,40,50,99
+
+SITE1-AS-3F-01#show spanning-tree vlan 10 | include Root|root
+  Root ID    Priority    32778
+             Address     00aa.bb03.0016
+             This bridge is the root
+
+SITE1-AS-3F-01#show ntp status | include Clock
+Clock is unsynchronized, stratum 16, no reference clock

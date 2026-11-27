@@ -1,0 +1,41 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -v
+      - name: Backup demo detects injected faults
+        run: python -m backup.restore_verify demo
+      - name: Patch report on synthetic inventory
+        run: python -m patching.patch_report --inventory data/synthetic/patch_inventory.csv --as-of 2026-11-01
+      - name: Switch onboarding validate, plan, post-check
+        run: |
+          python -m switch_onboarding.onboard plan --request switch_onboarding/samples/new-switch.json
+          python -m switch_onboarding.onboard postcheck --request switch_onboarding/samples/new-switch.json --show switch_onboarding/samples/postcheck-good.txt
+          ! python -m switch_onboarding.onboard postcheck --request switch_onboarding/samples/new-switch.json --show switch_onboarding/samples/postcheck-bad.txt
+          ! grep -n "{{" out/onboarding/*.cfg | grep -v -E "RADIUS_KEY|TACACS_KEY|SNMP_AUTH|SNMP_PRIV|LOCAL_ADMIN_HASH"
+
+  powershell:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell
+        run: |
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD/patching/Get-PatchCompliance.ps1", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors) { $errors; exit 1 }

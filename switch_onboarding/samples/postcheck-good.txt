@@ -1,0 +1,34 @@
+SITE1-AS-3F-01#show version | include IOS XE Software
+Cisco IOS XE Software, Version 17.12.4
+
+SITE1-AS-3F-01#show etherchannel summary
+Flags:  D - down        P - bundled in port-channel
+        I - stand-alone s - suspended
+        U - in use      S - Layer2
+Number of channel-groups in use: 1
+Number of aggregators:           1
+
+Group  Port-channel  Protocol    Ports
+------+-------------+-----------+-----------------------------------------------
+16     Po16(SU)        LACP      Te1/1/1(P)      Te2/1/1(P)
+
+SITE1-AS-3F-01#show interfaces trunk
+Port        Mode             Encapsulation  Status        Native vlan
+Po16        on               802.1q         trunking      1
+Gi1/0/45    on               802.1q         trunking      50
+
+Port        Vlans allowed on trunk
+Po16        10,20,30,40,50,99
+Gi1/0/45    50,99
+
+Port        Vlans allowed and active in management domain
+Po16        10,20,30,40,50,99
+
+SITE1-AS-3F-01#show spanning-tree vlan 10 | include Root|root
+  Root ID    Priority    24586
+             Address     00aa.bb01.0001
+             Cost        2
+             Port        2072 (Port-channel16)
+
+SITE1-AS-3F-01#show ntp status | include Clock
+Clock is synchronized, stratum 3, reference is 10.10.5.11

@@ -1,0 +1,18 @@
+{
+  "$comment": "Minimum OS build (build.UBR) per Windows release for the current patch cycle. Fictional cycle values: replace each Patch Tuesday from the vendor release notes. Builds are compared numerically, so a later cumulative update also satisfies the baseline.",
+  "cycle": "2026-10",
+  "release_date": "2026-10-13",
+  "grace_days": { "critical": 14, "standard": 30 },
+  "max_uptime_days": 35,
+  "minimum_build": {
+    "Windows Server 2019": "17763.7900",
+    "Windows Server 2022": "20348.4300",
+    "Windows Server 2025": "26100.6900",
+    "Windows 11 23H2": "22631.6100",
+    "Windows 11 24H2": "26100.6900"
+  },
+  "tiers": {
+    "critical": ["DC", "FS", "SQL"],
+    "standard": ["APP", "PRN", "WS"]
+  }
+}
